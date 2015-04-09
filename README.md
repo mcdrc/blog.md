@@ -6,7 +6,7 @@ descriptions and thumbnail images for each article. There is no commenting, no
 version control, no tagging. Just content.
 
 This minimalist script is intended to support a scenario where Internet access 
-is absent or intermittent, preventing the use of a web-based content management 
+is absent or intermittent, precluding the use of a web-based content management 
 system such as Wordpress. In a collaborative setup, plain text files and images 
 simply need to be dumped by users into a shared directory (by sneakernet or 
 file-synchronization utility), and one machine in the network runs a cron job 
@@ -23,14 +23,16 @@ place, anyone who can write Markdown can be a blogger.
 - [pandoc] -- to convert Markdown to HTML
 - imagemagick  -- to generate thumbnails from raster images
 - inkscape -- to generate thumbnails from SVG images
+- pandoc-citeproc -- for bibliography generation
 - pandoc [internal-references filter] -- to allow cross-references
 
 
-Bibliography and cross-referencing support is hard-coded into the script, but 
-can easily be removed if installing the internal-references filter is too much 
-trouble. Just modify the pandoc command in `generateHtml()` at the top of the 
-file as needed. Otherwise, the following should work:
-
+Given that this script is designed for academic blogging, bibliography and 
+cross-referencing support is hard-coded into the script. This can easily be 
+removed if installing pandoc-citeproc and the internal-references filter is too 
+much trouble. Just modify the pandoc command in `generateHtml()` at the top of 
+the file as needed. Otherwise, the following should work:
+    
     pip install git+https://github.com/aaren/pandoc-reference-filter.git
 
 
@@ -39,7 +41,7 @@ file as needed. Otherwise, the following should work:
 To initialize a blog, unzip `blog_template` into a directory and edit the files 
 in the `data/` subdirectory.
 
-The `data` directory should contain the following files (they can be blank):
+The `data/` directory should contain the following files (they can be blank):
 
   - indexheader.md -- Text or headers that go at the top of the index page.
   
@@ -48,6 +50,15 @@ The `data` directory should contain the following files (they can be blank):
 
   - bibliography.bib -- for bibliographic references. Add BibTeX format
     references here if you need them.
+
+  - [buttondown.css] -- "A clean, minimal CSS stylesheet for Markdown, Pandoc 
+    and MultiMarkdown HTML output." The stylesheet is fairly basic and can be 
+    modified as needed. Note that we have added floating and padding for images 
+    within paragraphs, so as to allow the thumbnails to show properly; these 
+    are cleared by the `<hr>` elements.
+  
+
+[buttondown.css]: https://gist.github.com/ryangray/1882525/
 
 The script expects images to be in an `img/` subdirectory. Articles will be 
 generated from Markdown files (`*.md`) in the top-level directory.
@@ -64,7 +75,6 @@ Raster formats (png, jpeg) and svg will work.
 [internal-references filter]: https://github.com/aaren/pandoc-reference-filter
 
 
-
 To build the blog:
 
     ./blog.py  PATH/TO/DIRECTORY
@@ -77,8 +87,8 @@ To regenerate everything, simply delete the `index.html` file.
 
 ## TODO:
 
-Make a setup file.
-
+- Make a setup file.
+- Catch exceptions and send to an error log.
 
 ## License
 
