@@ -20,10 +20,10 @@ place, anyone who can write Markdown can be a blogger.
 ## Requirements
 
 - python
-- [pandoc] (to convert Markdown to HTML)
-- imagemagick (to generate thumbnails from raster images)
-- inkscape (to generate thumbnails from SVG images)
-- pandoc [internal-references filter] (to allow cross-references)
+- [pandoc] -- to convert Markdown to HTML
+- imagemagick  -- to generate thumbnails from raster images
+- inkscape -- to generate thumbnails from SVG images
+- pandoc [internal-references filter] -- to allow cross-references
 
 
 Bibliography and cross-referencing support is hard-coded into the script, but 
