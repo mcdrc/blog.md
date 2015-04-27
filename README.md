@@ -24,16 +24,16 @@ place, anyone who can write Markdown can be a blogger.
 - imagemagick  -- to generate thumbnails from raster images
 - inkscape -- to generate thumbnails from SVG images
 - pandoc-citeproc -- for bibliography generation
-- pandoc internal-references filter -- to allow cross-references[^irf]
+- pandoc internal-references filter -- to allow cross-references
 
-[^irf]:
-    Given that this script is designed for academic blogging, bibliography and 
-    cross-referencing support is hard-coded into the script. This can easily be 
-    removed if installing pandoc-citeproc and the internal-references filter is 
-    too much trouble. Just modify the pandoc command in `generateHtml()` at the 
-    top of the file as needed. Otherwise, the following should work:
-        
-        pip install git+https://github.com/aaren/pandoc-reference-filter.git
+
+Given that this script is designed for academic blogging, bibliography and 
+cross-referencing support is hard-coded into the script. This can easily be 
+removed if installing pandoc-citeproc and the internal-references filter is 
+too much trouble. Just modify the pandoc command in `generateHtml()` at the 
+top of the file as needed. Otherwise, the following should work:
+    
+    pip install git+https://github.com/aaren/pandoc-reference-filter.git
 
 
 ## Setup and usage
