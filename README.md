@@ -1,4 +1,4 @@
-# blog.md
+# md2web
 
 This script generates a static blog, based on pages written in Markdown, with a 
 paginated index that lists articles in reverse chronological order and provides 
@@ -24,16 +24,16 @@ place, anyone who can write Markdown can be a blogger.
 - imagemagick  -- to generate thumbnails from raster images
 - inkscape -- to generate thumbnails from SVG images
 - pandoc-citeproc -- for bibliography generation
-- pandoc [internal-references filter] -- to allow cross-references
+- pandoc internal-references filter -- to allow cross-references[^irf]
 
-
-Given that this script is designed for academic blogging, bibliography and 
-cross-referencing support is hard-coded into the script. This can easily be 
-removed if installing pandoc-citeproc and the internal-references filter is too 
-much trouble. Just modify the pandoc command in `generateHtml()` at the top of 
-the file as needed. Otherwise, the following should work:
-    
-    pip install git+https://github.com/aaren/pandoc-reference-filter.git
+[^irf]:
+    Given that this script is designed for academic blogging, bibliography and 
+    cross-referencing support is hard-coded into the script. This can easily be 
+    removed if installing pandoc-citeproc and the internal-references filter is 
+    too much trouble. Just modify the pandoc command in `generateHtml()` at the 
+    top of the file as needed. Otherwise, the following should work:
+        
+        pip install git+https://github.com/aaren/pandoc-reference-filter.git
 
 
 ## Setup and usage
@@ -72,12 +72,11 @@ image in an html comment at the beginning of the Markdown source:
 Raster formats (png, jpeg) and svg will work.
 
 [pandoc]: http://johnmacfarlane.net/pandoc/README.html
-[internal-references filter]: https://github.com/aaren/pandoc-reference-filter
 
 
 To build the blog:
 
-    ./blog.py  PATH/TO/DIRECTORY
+    md2web [ PATH/TO/DIRECTORY ]
 
 This rebuilds the index and missing thumbnails, as well as processing any pages
 whose source has been updated since the index was last generated.
@@ -87,7 +86,6 @@ To regenerate everything, simply delete the `index.html` file.
 
 ## TODO:
 
-- Make a setup file.
 - Catch exceptions and send to an error log.
 
 ## License

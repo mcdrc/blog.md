@@ -1,6 +1,12 @@
 #!/usr/bin/python
 
-'''Static blog/website builder. 
+'''Static blog/website builder.
+
+    Usage:
+        md2web [ DIRECTORY ]
+    
+    Options:
+        DIRECTORY   A directory containing Markdown files to process
 
     Copyright 2015 Eric Thrift.
 
@@ -19,6 +25,9 @@
 '''
 
 import os, time, glob, subprocess, re, sys
+from docopt import docopt
+
+args = docopt(__doc__)
 
 def generateHtml(mdFile, htmlFile):
     '''Convert Markdown to HTML using pandoc.'''
@@ -77,8 +86,9 @@ def getIndexData(mdFile):
         
         if 'SVG' in thext.upper():
             thumbFile = '%s-thumb%s' % (throot, '.png')
-            subprocess.call(['inkscape', '-e', thumbFile, '-w', '200',
-                inFile])
+            if not os.path.exists(thumbFile):
+                subprocess.call(['inkscape', '-e', thumbFile, '-w', '200',
+                    inFile])
             
         else:
             thumbFile = '%s-thumb%s' % (throot, thext)
@@ -89,6 +99,7 @@ def getIndexData(mdFile):
     return (thumbFile, title, description, mdFile)
 
 def writeIndex(articles, indexNumber=0, prevlink=False):
+    '''Generate an index page.'''
     nextIndexFile = False
     if indexNumber:
         indexFile = 'archive%03d.html' % indexNumber
@@ -119,6 +130,7 @@ def writeIndex(articles, indexNumber=0, prevlink=False):
     os.unlink('index.md')
 
 def run(blogpath):
+    '''Regenerate the blog or website at blogpath.'''
 
     os.chdir(blogpath)
 
@@ -170,8 +182,10 @@ def run(blogpath):
     return
 
 if __name__ == "__main__":
-    if not sys.argv[1]:
-        blogpath = os.getcwd()
+    if args['DIRECTORY']:
+        blogpath = args['DIRECTORY']
     else:
-        blogpath = sys.argv[1]
+        blogpath = os.getcwd()
+    
+    print "Processing %s..." % blogpath
     run(blogpath)
