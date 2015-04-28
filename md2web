@@ -25,7 +25,8 @@
         DIRECTORY   A directory containing Markdown files to process
 '''
 
-import os, time, glob, subprocess, re, sys
+import os, time, glob, subprocess, re, sys, tempfile
+from datetime import date
 from docopt import docopt
 
 args = docopt(__doc__)
@@ -34,11 +35,17 @@ def generateHtml(mdFile, htmlFile):
     '''Convert Markdown to HTML using pandoc.'''
     
     print 'processing %s...' % mdFile
+    tsFile = tempfile.NamedTemporaryFile(delete=False)
+    tsFile.write('Last updated %s' %  date.fromtimestamp(os.path.getmtime(mdFile)))
+    tsFile.close()
+        
     subprocess.call(['pandoc', '--filter', 'internal-references', '-o',
         htmlFile, '--smart', '--standalone', 
         '--bibliography="%s"' % os.path.join('data','bibliography.bib'),
         '--css=data/buttondown.css', '-f', 'markdown+mmd_title_block',
-        mdFile, os.path.join('data','footer.md')])
+        mdFile, os.path.join('data','footer.md'), tsFile.name])
+
+    os.unlink(tsFile.name)
     return
 
 def getMeta(md, key):
@@ -64,7 +71,8 @@ def getMeta(md, key):
 def getIndexData(mdFile):
     '''Retrieve title and description metadata from a Markdown
     document. Prepare a thumbnail image based on the first image in the 
-    document.'''
+    document. Return a list containing thumbFile, title, description, 
+    mdFile.'''
     
     description = None
     img = None
@@ -86,6 +94,7 @@ def getIndexData(mdFile):
         throot, thext = os.path.splitext(inFile)
         
         if 'SVG' in thext.upper():
+            # first convert SVG to a temporary large PNG, then to thumbnail
             thumbFile = '%s-thumb%s' % (throot, '.png')
             tmpfile = 'tmp.png'
             if not os.path.exists(thumbFile):
@@ -96,6 +105,7 @@ def getIndexData(mdFile):
                 os.unlink(tmpfile)
             
         else:
+            # convert jpeg and png images directly to thumbnails
             thumbFile = '%s-thumb%s' % (throot, thext)
             if not os.path.exists(thumbFile):
                 subprocess.call(['convert', inFile, '-resize', '200x200^', 
@@ -105,6 +115,7 @@ def getIndexData(mdFile):
 
 def writeIndex(articles, indexNumber=0, prevlink=False):
     '''Generate an index page.'''
+    
     nextIndexFile = False
     if indexNumber:
         indexFile = 'archive%03d.html' % indexNumber
@@ -115,7 +126,6 @@ def writeIndex(articles, indexNumber=0, prevlink=False):
     else:
         indexFile = 'index.html'
     prevIndexFile = 'archive%03d.html' % (indexNumber+1)
-    
 
     with open('index.md', 'w') as indexFileStream:
         headerFile = os.path.join('data', 'indexheader.md')
@@ -142,8 +152,10 @@ def run(blogpath):
     curtime = time.time()
     
     if not os.path.exists('index.html'):
+        # Regenerate everything if the index.html file is absent
         ts = 0
     else:
+        # If we have index.html, regenerate anything more recent than it
         ts = os.path.getmtime('index.html')
     
     filenames = glob.glob('*.md')
@@ -152,6 +164,7 @@ def run(blogpath):
     indexData = list()
     
     for mdFile in filenames:
+        # Generate html articles newer than the timestamp
         root, ext = os.path.splitext(mdFile)
         htmlFile = '%s.html' % root
         if os.path.getmtime(mdFile) > ts:
@@ -161,12 +174,16 @@ def run(blogpath):
     articles = list()
     
     for i in indexData:
+        # make the index
         txt = list()
         htmlFile = os.path.splitext(i[3])[0]+'.html'
         if i[0]:
+            # thumbnail image
             txt.append('![](%s) ' % i[0])
+        # article header
         txt.append('**[%s](%s)**' % (i[1], htmlFile))
         if i[2]:
+            # article description
             txt.append('\n-- ')
             txt.append(i[2])
         articles.append(''.join(txt))
