@@ -1,5 +1,21 @@
 #!/usr/bin/python
 
+# Copyright 2015 Eric Thrift.
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 '''Static blog/website builder.
 
     Usage:
@@ -7,21 +23,6 @@
     
     Options:
         DIRECTORY   A directory containing Markdown files to process
-
-    Copyright 2015 Eric Thrift.
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-    
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-    
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 import os, time, glob, subprocess, re, sys
@@ -86,15 +87,19 @@ def getIndexData(mdFile):
         
         if 'SVG' in thext.upper():
             thumbFile = '%s-thumb%s' % (throot, '.png')
+            tmpfile = 'tmp.png'
             if not os.path.exists(thumbFile):
-                subprocess.call(['inkscape', '-e', thumbFile, '-w', '200',
+                subprocess.call(['inkscape', '-e', tmpfile, '-w', '600', 
                     inFile])
+                subprocess.call(['convert', tmpfile, '-resize', '200x200^', 
+                    '-gravity', 'center', '-extent', '200x200', thumbFile])
+                os.unlink(tmpfile)
             
         else:
             thumbFile = '%s-thumb%s' % (throot, thext)
             if not os.path.exists(thumbFile):
-                subprocess.call(['convert', inFile, '-resize', '200x200', 
-                    thumbFile])
+                subprocess.call(['convert', inFile, '-resize', '200x200^', 
+                    '-gravity', 'center', '-extent', '200x200', thumbFile])
         
     return (thumbFile, title, description, mdFile)
 
