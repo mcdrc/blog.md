@@ -24,16 +24,16 @@ place, anyone who can write Markdown can be a blogger.
 - imagemagick  -- to generate thumbnails from raster images
 - inkscape -- to generate thumbnails from SVG images
 - pandoc-citeproc -- for bibliography generation
-- pandoc internal-references filter -- to allow cross-references
+- pandoc [internal-references filter] -- to allow cross-references
 
 
 Given that this script is designed for academic blogging, bibliography and 
 cross-referencing support is hard-coded into the script. This can easily be 
 removed if installing pandoc-citeproc and the internal-references filter is 
 too much trouble. Just modify the pandoc command in `generateHtml()` at the 
-top of the file as needed. Otherwise, the following should work:
+top of the file as needed. 
     
-    pip install git+https://github.com/aaren/pandoc-reference-filter.git
+[internal-references filter]: https://github.com/aaren/pandoc-reference-filter.git
 
 
 ## Setup and usage
@@ -82,6 +82,10 @@ This rebuilds the index and missing thumbnails, as well as processing any pages
 whose source has been updated since the index was last generated.
 
 To regenerate everything, simply delete the `index.html` file.
+
+Draft articles can be put in the main directory, and prefixed with an 
+underscore (i.e., `_filename.md`). This will prevent them from being listed in 
+the index.
 
 
 ## TODO:

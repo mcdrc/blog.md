@@ -169,7 +169,11 @@ def run(blogpath):
         htmlFile = '%s.html' % root
         if os.path.getmtime(mdFile) > ts:
             generateHtml(mdFile, htmlFile)
-        indexData.append(getIndexData(mdFile))
+        
+        # Parse draft articles, but do not list them in the index.
+        # These articles have names that begin with an underscore.
+        if not mdFile.startswith('_'):
+            indexData.append(getIndexData(mdFile))
     
     articles = list()
     
