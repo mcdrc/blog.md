@@ -100,16 +100,16 @@ def getIndexData(mdFile):
             if not os.path.exists(thumbFile):
                 subprocess.call(['inkscape', '-e', tmpfile, '-w', '600', 
                     inFile])
-                subprocess.call(['convert', tmpfile, '-resize', '200x200^', 
-                    '-gravity', 'center', '-extent', '200x200', thumbFile])
+                subprocess.call(['convert', tmpfile, '-resize', '300x200^', 
+                    '-gravity', 'center', '-extent', '300x200', thumbFile])
                 os.unlink(tmpfile)
             
         else:
             # convert jpeg and png images directly to thumbnails
             thumbFile = '%s-thumb%s' % (throot, thext)
             if not os.path.exists(thumbFile):
-                subprocess.call(['convert', inFile, '-resize', '200x200^', 
-                    '-gravity', 'center', '-extent', '200x200', thumbFile])
+                subprocess.call(['convert', inFile, '-resize', '300x200^', 
+                    '-gravity', 'center', '-extent', '300x200', thumbFile])
         
     return (thumbFile, title, description, mdFile)
 
