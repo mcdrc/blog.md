@@ -132,7 +132,9 @@ def writeIndex(articles, indexNumber=0, prevlink=False):
         if os.path.exists(headerFile):
             with open(headerFile, 'r') as header:
                 indexFileStream.write(header.read())
-        indexFileStream.write('\n\n----\n\n'.join(articles))\
+        indexFileStream.write('\n\n<div class="md2web_index">\n\n')
+        indexFileStream.write('\n\n'.join(articles))
+        indexFileStream.write('\n\n</div><!-- .md2web_index -->\n\n')
         
         links = list()
         if prevlink:
@@ -179,19 +181,23 @@ def run(blogpath):
     
     for i in indexData:
         # make the index
-        txt = list()
+        # Do this in Markdown so that we can get identical output from Pandoc
+        # for index and article pages
         htmlFile = os.path.splitext(i[3])[0]+'.html'
         if i[0]:
-            # thumbnail image
-            txt.append('![](%s) ' % i[0])
+            art_thumb = i[0]
+        else:
+            art_thumb = 'img/default.png'
+            
+          
         # article header
-        txt.append('**[%s](%s)**' % (i[1], htmlFile))
+        art_desc = '**[%s](%s)**' % (i[1], htmlFile)
         if i[2]:
             # article description
-            txt.append('\n-- ')
-            txt.append(i[2])
-        articles.append(''.join(txt))
-    
+            art_desc +=' \\\n%s' % i[2]
+
+        articles.append('![%s](%s) %s' % (i[1], art_thumb, art_desc) )
+
     # split into 20 articles per page
     offset = 0
     count = 20
